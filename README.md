@@ -5,6 +5,7 @@
 \## Overview
 
 This project is a C# client-server shopping application. It includes a console-based server and a Windows Forms client application. The system allows users to connect with an account number, view available products, purchase items, and view current purchase orders.
+DEC 2024
 
 
 
@@ -85,4 +86,3 @@ The server manages products, accounts, orders, and communication with multiple c
 \- Error handling
 
 \- Separation of UI and handler logic
-
