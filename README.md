@@ -1,88 +1,45 @@
-\# Client-Server Shopping System
+# Client-Server Shopping System
 
+A small shopping system in two parts:
 
+- **Server:** a console app that holds the products, accounts and orders.
+- **Client:** a Windows Forms app that logs in and shops.
 
-\## Overview
+They talk over TCP using a plain-text protocol I defined for the project. Several clients can be connected at the same time.
 
-This project is a C# client-server shopping application. It includes a console-based server and a Windows Forms client application. The system allows users to connect with an account number, view available products, purchase items, and view current purchase orders.
-DEC 2024
+Final project for **PRG650 Advanced Programming Concepts** at Seneca Polytechnic, Fall 2024. Individual project.
 
+## How it works
 
+The server listens on port 5000 and handles each connected client on its own task. When it starts, it creates five products with a random stock of 1 to 3 each, and a few test accounts. It prints every command it receives and every reply it sends, so you can follow the conversation in the console.
 
-The server manages products, accounts, orders, and communication with multiple clients at the same time.
+The client connects to a hostname (default `localhost`) with an account number. Then it shows the product list, lets you buy items, and shows your orders.
 
+## Protocol
 
+One command per line, one reply per line.
 
-\## Main Features
+| Client sends | Server replies |
+|---|---|
+| `CONNECT:<account_no>` | `CONNECTED:<user name>` or `CONNECT_ERROR` |
+| `GET_PRODUCTS` | product names and stock |
+| `PURCHASE:<product>` | success, `NOT_AVAILABLE` (out of stock), `NOT_VALID` (unknown product) or `USER_NOT_CONNECTED` |
+| `GET_ORDERS` | the orders placed so far |
+| `DISCONNECT` | closes the session |
+| anything else | `INVALID_COMMAND` |
 
-\- Console-based server application
+## Run it
 
-\- Windows Forms client application
+1. Open `ShoppingManager.sln` in Visual Studio 2022.
+2. Start **ShoppingServer** first. It targets .NET Framework 4.7.2.
+3. Start one or more **ShoppingClient** windows. They target .NET 8 for Windows.
+4. Log in with account 1001, 1002, 1003 or 1004.
 
-\- Login using account number
+## What I'd improve
 
-\- Product inventory with randomized quantities
+- **Thread safety.** Each client runs on its own task, but the shared product and order lists aren't locked. Two clients buying the last item at the same moment could both succeed. A `lock` around purchases, or concurrent collections, would fix it.
+- **Persistence.** Orders live only in memory, as the assignment allowed, so they're lost when the server stops.
 
-\- Purchase function
+## Tech
 
-\- Order history display
-
-\- Multi-client support
-
-\- Custom client-server command protocol
-
-\- Graceful client disconnect
-
-\- Error handling for invalid login, unavailable products, and invalid products
-
-
-
-\## Technologies Used
-
-\- C#
-
-\- .NET
-
-\- Windows Forms
-
-\- Client-server communication
-
-\- Socket programming
-
-\- Multithreading / asynchronous programming
-
-\- Object-oriented programming
-
-
-
-\## Protocol Commands
-
-\- CONNECT:account\_no
-
-\- GET\_PRODUCTS
-
-\- PURCHASE:product\_name
-
-\- GET\_ORDERS
-
-\- DISCONNECT
-
-
-
-\## Skills Demonstrated
-
-\- Network programming
-
-\- GUI development
-
-\- Server-side programming
-
-\- Multi-client communication
-
-\- Protocol design
-
-\- Object-oriented design
-
-\- Error handling
-
-\- Separation of UI and handler logic
+C# · .NET Framework 4.7.2 (server) · .NET 8 Windows Forms (client) · TcpListener / TcpClient · async/await · Task-based concurrency
